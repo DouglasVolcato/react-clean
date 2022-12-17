@@ -4,16 +4,21 @@ import { HttpPostClientSpy } from "../../test/mock-http-client";
 import { mockAuthentication } from "../../test/mock-authentication";
 import { RemoteAuthentication } from "./remote-authentication";
 import { UnexpectedError } from "../../../domain/errors/unexpected-error";
+import { AuthenticationParams } from "../../../domain/usecases/authentication";
+import { AccountModel } from "../../../domain/models/account-model";
 
 type SutTypes = {
   sut: RemoteAuthentication;
-  httpPostClientSpy: HttpPostClientSpy;
+  httpPostClientSpy: HttpPostClientSpy<AuthenticationParams, AccountModel>;
 };
 
 const url = "other_url";
 
 const makeSut = (url = "any_url"): SutTypes => {
-  const httpPostClientSpy = new HttpPostClientSpy();
+  const httpPostClientSpy = new HttpPostClientSpy<
+    AuthenticationParams,
+    AccountModel
+  >();
   const sut = new RemoteAuthentication(url, httpPostClientSpy);
   return { sut, httpPostClientSpy };
 };
