@@ -1,17 +1,37 @@
 import React from "react";
-import { render, RenderResult } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  RenderResult,
+} from "@testing-library/react";
 import Login from "./login";
+import { Validation } from "../../protocols/validation";
+
+class ValidationSpy implements Validation {
+  errorMessage: string;
+  input: object;
+
+  validate(input: any): string {
+    this.input = input;
+    return this.errorMessage;
+  }
+}
 
 type SutTypes = {
   sut: RenderResult;
+  validationSpy: Validation;
 };
 
 const makeSut = (): SutTypes => {
-  const sut = render(<Login />);
-  return { sut };
+  const validationSpy = new ValidationSpy();
+  const sut = render(<Login validation={validationSpy} />);
+  return { sut, validationSpy };
 };
 
 describe("Login Page", () => {
+  afterEach(cleanup);
+
   test("Should not render spinner nor error on start.", () => {
     const { sut } = makeSut();
     const errorWrap = sut.getByTestId("errorWrap");
@@ -26,13 +46,26 @@ describe("Login Page", () => {
 
   test("Should start with email input title as required field.", () => {
     const { sut } = makeSut();
-    const emailInput = sut.getByTestId("email-status");
-    expect(emailInput.title).toBe("Required field");
+    const emailStatusInput = sut.getByTestId(
+      "email-status"
+    ) as HTMLInputElement;
+    expect(emailStatusInput.title).toBe("Required field");
   });
 
   test("Should start with password input title as required field.", () => {
     const { sut } = makeSut();
-    const passwordInput = sut.getByTestId("password-status");
-    expect(passwordInput.title).toBe("Required field");
+    const passwordStatusInput = sut.getByTestId(
+      "password-status"
+    ) as HTMLInputElement;
+    expect(passwordStatusInput.title).toBe("Required field");
+  });
+
+  test("Should call validation with correct values.", () => {
+    const { sut, validationSpy } = makeSut();
+    const emailInput = sut.getByTestId("email") as HTMLInputElement;
+    fireEvent.input(emailInput, { target: { value: "any_email" } });
+    expect(validationSpy.input).toEqual({
+      email: "any_email",
+    });
   });
 });
