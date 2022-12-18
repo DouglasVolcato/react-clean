@@ -43,19 +43,6 @@ button{
     flex-direction: column;
     height: 100vh;
     justify-content: space-between;
-
-    .header{
-        background-color: $primary;
-        display: flex;
-        flex-direction: column;
-        border-top: 30px solid $primaryDark;
-        align-items: center;
-
-        h1{
-            color: $white;
-            margin: 10px 0 20px 0;
-        }
-    }
     
     .form{
         display: flex;
@@ -131,10 +118,5 @@ button{
                 font-weight: bold;
             }
         }
-    }
-    
-    .footer{
-        background-color: $primary;
-        height: 48px;
     }
 }
