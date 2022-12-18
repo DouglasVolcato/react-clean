@@ -9,5 +9,9 @@ describe("Login Page", () => {
     expect(errorWrap.childElementCount).toBe(0);
   });
 
-
+  test("Should start with initial button disabled.", () => {
+    const { getByTestId } = render(<Login />);
+    const submitButton = getByTestId("submit") as HTMLButtonElement;
+    expect(submitButton.disabled).toBe(true);
+  });
 });
