@@ -3,6 +3,7 @@ import "./login-styles.scss";
 import Spinner from "../../components/spinner/spinner";
 import LoginHeader from "../../components/login-header/login-header";
 import Footer from "../../components/footer/footer";
+import Input from "../../components/input/input";
 
 const Login: React.FC = () => {
   return (
@@ -10,18 +11,12 @@ const Login: React.FC = () => {
       <LoginHeader />
       <form className="form">
         <h2>Login</h2>
-        <div className="inputWrap">
-          <input type="email" name="email" placeholder="Write your email" />
-          <span className="status"></span>
-        </div>
-        <div className="inputWrap">
-          <input
-            type="password"
-            name="password"
-            placeholder="Write your password"
-          />
-          <span className="status"></span>
-        </div>
+        <Input type="email" name="email" placeholder="Write your email" />
+        <Input
+          type="password"
+          name="password"
+          placeholder="Write your password"
+        />
         <button className="submit" type="submit">
           Send
         </button>
