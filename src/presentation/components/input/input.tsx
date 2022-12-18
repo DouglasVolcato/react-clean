@@ -19,7 +19,7 @@ const Input: React.FC<Props> = (props: Props) => {
     <div className="inputWrap">
       <input {...props} />
       <span
-        data-testId={`${props.name}-status`}
+        data-testid={`${props.name}-status`}
         title={getTitle()}
         className="status"
       ></span>

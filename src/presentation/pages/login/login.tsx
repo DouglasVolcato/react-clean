@@ -30,7 +30,7 @@ const Login: React.FC = () => {
             placeholder="Write your password"
           />
           <button
-            data-testId="submit"
+            data-testid="submit"
             disabled
             className="submit"
             type="submit"
