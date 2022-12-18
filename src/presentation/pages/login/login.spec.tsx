@@ -14,4 +14,16 @@ describe("Login Page", () => {
     const submitButton = getByTestId("submit") as HTMLButtonElement;
     expect(submitButton.disabled).toBe(true);
   });
+
+  test("Should start with email input title as required field.", () => {
+    const { getByTestId } = render(<Login />);
+    const emailInput = getByTestId("email-status");
+    expect(emailInput.title).toBe("Required field");
+  });
+
+  test("Should start with password input title as required.", () => {
+    const { getByTestId } = render(<Login />);
+    const passwordInput = getByTestId("password-status");
+    expect(passwordInput.title).toBe("Required field");
+  });
 });
