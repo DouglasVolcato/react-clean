@@ -1,43 +1,5 @@
 @import "../../styles/colors.scss";
 
-*{
-    font-family: monospace;
-    font-size: 14px;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
-
-body{
-    background-color: $background;
-}
-
-input[type="email"],
-input[type="password"] {
-    border: solid 1px $primaryLight;
-    line-height: 40px;
-    border-radius: 4px;
-
-    &:focus{
-        outline-color: $primaryLight;
-    }
-}
-
-button{
-    background-color: $primary;
-    color: $white;
-    border-radius: 8px;
-    font-size: 16px;
-    border: none;
-    line-height: 60px;
-    font-weight: bolder;
-    cursor: pointer;
-
-    &:hover{
-        background-color: $primaryDark;
-    }
-}
-
 .login{
     display: flex;
     flex-direction: column;
