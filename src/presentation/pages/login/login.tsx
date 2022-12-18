@@ -6,21 +6,21 @@ import Input from "../../components/input/input";
 import FormStatus from "../../components/form-status/form-status";
 import Context from "../../contexts/form/form-context";
 
-type StateProps = {
-  isLoading: boolean;
-  errorMessage: string;
-};
-
 const Login: React.FC = () => {
-  const [state] = useState<StateProps>({
+  const [state] = useState({
     isLoading: false,
-    errorMessage: "",
+  });
+
+  const [errorState] = useState({
+    emailError: "Required field",
+    passwordError: "Required field",
+    mainError: "",
   });
 
   return (
     <div className="login">
       <LoginHeader />
-      <Context.Provider value={state}>
+      <Context.Provider value={{ ...state, ...errorState }}>
         <form className="form">
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Write your email" />
