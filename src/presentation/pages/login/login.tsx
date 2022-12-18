@@ -1,12 +1,13 @@
 import React from "react";
 import "./login-styles.scss";
 import Spinner from "../../components/spinner/spinner";
+import Logo from "../../components/logo/logo";
 
 const Login: React.FC = () => {
   return (
     <div className="login">
       <header className="header">
-        <img className="image" src="./src\presentation\pages\login\logo.png" />
+        <Logo />
         <h1>React Webpage</h1>
       </header>
       <form className="form">
