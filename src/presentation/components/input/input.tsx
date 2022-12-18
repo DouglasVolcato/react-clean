@@ -15,9 +15,16 @@ const Input: React.FC<Props> = (props: Props) => {
     return error;
   };
 
+  const handleChange = (event) => {
+    value.setState({
+      ...value,
+      [event.target.name]: event.target.value,
+    });
+  };
+
   return (
     <div className="inputWrap">
-      <input {...props} />
+      <input data-testid={`${props.name}`} {...props} onChange={handleChange} />
       <span
         data-testid={`${props.name}-status`}
         title={getTitle()}

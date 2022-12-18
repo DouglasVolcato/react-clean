@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./login-styles.scss";
 import LoginHeader from "../../components/login-header/login-header";
 import Footer from "../../components/footer/footer";
 import Input from "../../components/input/input";
 import FormStatus from "../../components/form-status/form-status";
 import Context from "../../contexts/form/form-context";
+import { Validation } from "../../protocols/validation";
 
-const Login: React.FC = () => {
-  const [state] = useState({
+type Props = {
+  validation: Validation;
+};
+
+const Login: React.FC<Props> = ({ validation }: Props) => {
+  const [state, setState] = useState({
     isLoading: false,
+    email: "",
   });
 
   const [errorState] = useState({
@@ -17,10 +23,14 @@ const Login: React.FC = () => {
     mainError: "",
   });
 
+  useEffect(() => {
+    validation.validate({ email: state.email });
+  }, [state.email]);
+
   return (
     <div className="login">
       <LoginHeader />
-      <Context.Provider value={{ ...state, ...errorState }}>
+      <Context.Provider value={{ ...state, ...errorState, setState }}>
         <form className="form">
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Write your email" />
