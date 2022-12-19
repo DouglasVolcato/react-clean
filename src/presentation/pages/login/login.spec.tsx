@@ -16,6 +16,7 @@ type SutTypes = {
 
 const makeSut = (): SutTypes => {
   const validationSpy = new ValidationSpy();
+  validationSpy.errorMessage = "Error message";
   const sut = render(<Login validation={validationSpy} />);
   return { sut, validationSpy };
 };
@@ -40,7 +41,7 @@ describe("Login Page", () => {
     const emailStatusInput = sut.getByTestId(
       "email-status"
     ) as HTMLInputElement;
-    expect(emailStatusInput.title).toBe("Required field");
+    expect(emailStatusInput.title).toBe("Error message");
   });
 
   test("Should start with password input title as required field.", () => {
@@ -65,5 +66,13 @@ describe("Login Page", () => {
     fireEvent.input(passwordInput, { target: { value: "any_password" } });
     expect(validationSpy.fieldName).toEqual("password");
     expect(validationSpy.fieldValue).toEqual("any_password");
+  });
+
+  test("Should show email error if validation fails.", () => {
+    const { sut, validationSpy } = makeSut();
+    const emailInput = sut.getByTestId("email") as HTMLInputElement;
+    fireEvent.input(emailInput, { target: { value: "any_email" } });
+    const emailStatus = sut.getByTestId("email-status");
+    expect(emailStatus.title).toBe("Error message");
   });
 });
