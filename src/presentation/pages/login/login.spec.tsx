@@ -85,4 +85,15 @@ describe("Login Page", () => {
     const emailStatus = sut.getByTestId("email-status");
     expect(emailStatus.title).toBe("Everything is fine!");
   });
+
+  test("Should enable submit button if form is valid.", () => {
+    const { sut, validationSpy } = makeSut();
+    validationSpy.errorMessage = null;
+    const emailInput = sut.getByTestId("email") as HTMLInputElement;
+    fireEvent.input(emailInput, { target: { value: "any_email" } });
+    const passwordInput = sut.getByTestId("password") as HTMLInputElement;
+    fireEvent.input(passwordInput, { target: { value: "any_password" } });
+    const submitButton = sut.getByTestId("submit") as HTMLButtonElement;
+    expect(submitButton.disabled).toBe(false);
+  });
 });
