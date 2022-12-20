@@ -36,22 +36,6 @@ describe("Login Page", () => {
     expect(submitButton.disabled).toBe(true);
   });
 
-  test("Should start with email input title as required field.", () => {
-    const { sut } = makeSut();
-    const emailStatusInput = sut.getByTestId(
-      "email-status"
-    ) as HTMLInputElement;
-    expect(emailStatusInput.title).toBe("Error message");
-  });
-
-  test("Should start with password input title as required field.", () => {
-    const { sut } = makeSut();
-    const passwordStatusInput = sut.getByTestId(
-      "password-status"
-    ) as HTMLInputElement;
-    expect(passwordStatusInput.title).toBe("Required field");
-  });
-
   test("Should call validation with correct email.", () => {
     const { sut, validationSpy } = makeSut();
     const emailInput = sut.getByTestId("email") as HTMLInputElement;
@@ -69,10 +53,18 @@ describe("Login Page", () => {
   });
 
   test("Should show email error if validation fails.", () => {
-    const { sut, validationSpy } = makeSut();
+    const { sut } = makeSut();
     const emailInput = sut.getByTestId("email") as HTMLInputElement;
     fireEvent.input(emailInput, { target: { value: "any_email" } });
     const emailStatus = sut.getByTestId("email-status");
     expect(emailStatus.title).toBe("Error message");
+  });
+
+  test("Should show email error if validation fails.", () => {
+    const { sut } = makeSut();
+    const passwordInput = sut.getByTestId("password") as HTMLInputElement;
+    fireEvent.input(passwordInput, { target: { value: "any_password" } });
+    const passwordStatus = sut.getByTestId("password-status");
+    expect(passwordStatus.title).toBe("Error message");
   });
 });
