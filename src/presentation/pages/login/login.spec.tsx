@@ -23,6 +23,19 @@ const simulateValidSubmit = (
   fireEvent.click(submitButton);
 };
 
+const populateEmailField = (sut: RenderResult, email = "any_email") => {
+  const emailInput = sut.getByTestId("email") as HTMLInputElement;
+  fireEvent.input(emailInput, { target: { value: email } });
+};
+
+const populatePasswordField = (
+  sut: RenderResult,
+  password = "any_password"
+) => {
+  const passwordInput = sut.getByTestId("password") as HTMLInputElement;
+  fireEvent.input(passwordInput, { target: { value: password } });
+};
+
 type SutTypes = {
   sut: RenderResult;
   validationSpy: Validation;
@@ -56,16 +69,14 @@ describe("Login Page", () => {
 
   test("Should call validation with correct email.", () => {
     const { sut, validationSpy } = makeSut();
-    const emailInput = sut.getByTestId("email") as HTMLInputElement;
-    fireEvent.input(emailInput, { target: { value: "any_email" } });
+    populateEmailField(sut);
     expect(validationSpy.fieldName).toEqual("email");
     expect(validationSpy.fieldValue).toEqual("any_email");
   });
 
   test("Should call validation with correct password.", () => {
     const { sut, validationSpy } = makeSut();
-    const passwordInput = sut.getByTestId("password") as HTMLInputElement;
-    fireEvent.input(passwordInput, { target: { value: "any_password" } });
+    populatePasswordField(sut);
     expect(validationSpy.fieldName).toEqual("password");
     expect(validationSpy.fieldValue).toEqual("any_password");
   });
@@ -138,6 +149,16 @@ describe("Login Page", () => {
     simulateValidSubmit(sut);
     setTimeout(() => {
       expect(authenticationSpy.callsCount).toBe(1);
+    }, 500);
+  });
+
+  test("Should not call if form is invalid.", async () => {
+    const { sut, validationSpy, authenticationSpy } = makeSut();
+    validationSpy.errorMessage = null;
+    populateEmailField(sut);
+    fireEvent.submit(sut.getByTestId("form"));
+    setTimeout(() => {
+      expect(authenticationSpy.callsCount).toBe(0);
     }, 500);
   });
 });
