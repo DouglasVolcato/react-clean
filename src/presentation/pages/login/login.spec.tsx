@@ -67,4 +67,22 @@ describe("Login Page", () => {
     const passwordStatus = sut.getByTestId("password-status");
     expect(passwordStatus.title).toBe("Error message");
   });
+
+  test("Should show valid state if password validation succeeds.", () => {
+    const { sut, validationSpy } = makeSut();
+    validationSpy.errorMessage = null;
+    const passwordInput = sut.getByTestId("password") as HTMLInputElement;
+    fireEvent.input(passwordInput, { target: { value: "any_password" } });
+    const passwordStatus = sut.getByTestId("password-status");
+    expect(passwordStatus.title).toBe("Everything is fine!");
+  });
+
+  test("Should show valid state if email validation succeeds.", () => {
+    const { sut, validationSpy } = makeSut();
+    validationSpy.errorMessage = null;
+    const emailInput = sut.getByTestId("email") as HTMLInputElement;
+    fireEvent.input(emailInput, { target: { value: "any_email" } });
+    const emailStatus = sut.getByTestId("email-status");
+    expect(emailStatus.title).toBe("Everything is fine!");
+  });
 });
