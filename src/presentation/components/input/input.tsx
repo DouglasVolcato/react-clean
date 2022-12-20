@@ -12,7 +12,7 @@ const Input: React.FC<Props> = (props: Props) => {
   const error = value[`${props.name}Error`];
 
   const getTitle = (): string => {
-    return error;
+    return error || "Everything is fine!";
   };
 
   const handleChange = (event) => {
@@ -22,13 +22,17 @@ const Input: React.FC<Props> = (props: Props) => {
     });
   };
 
+  const getColoredStatus = () => {
+    return getTitle() ? "status-red" : "status-green";
+  };
+
   return (
-    <div className="inputWrap">
+    <div className="inputWrap {getTitle()}">
       <input data-testid={`${props.name}`} {...props} onChange={handleChange} />
       <span
         data-testid={`${props.name}-status`}
         title={getTitle()}
-        className="status"
+        className={getColoredStatus()}
       ></span>
     </div>
   );
