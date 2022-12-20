@@ -11,7 +11,7 @@
         padding: 0 25px 0 8px;
     }   
     
-    .status{
+    .status-red{
         position: absolute;
         right: 3px;
         color: $red;
@@ -21,8 +21,21 @@
         width: 20px;
         height: 20px;
         border-radius: 100%;
-        border: solid 0.5px $primary;
-        
+        border: solid 0.5px $primary; 
+        cursor: help;
+    }
+
+    .status-green{
+        position: absolute;
+        right: 3px;
+        color: $green;
+        font-weight: bolder;
+        font-size: 12px;
+        background-color: $green;
+        width: 20px;
+        height: 20px;
+        border-radius: 100%;
+        border: solid 0.5px $primary; 
         cursor: help;
     }
 }
