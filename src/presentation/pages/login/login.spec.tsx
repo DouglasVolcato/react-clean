@@ -8,17 +8,37 @@ import {
 import Login from "./login";
 import { Validation } from "../../protocols/validation";
 import { ValidationSpy } from "../../test/mock-validation";
+import {
+  Authentication,
+  AuthenticationParams,
+} from "../../../domain/usecases/authentication";
+import { AccountModel } from "../../../domain/models/account-model";
+import { mockAccountModel } from "../../../data/test/mock-account";
+
+class AuthenticationSpy implements Authentication {
+  account = mockAccountModel();
+  params: AuthenticationParams;
+
+  async auth(params: AuthenticationParams): Promise<AccountModel> {
+    this.params = params;
+    return Promise.resolve(this.account);
+  }
+}
 
 type SutTypes = {
   sut: RenderResult;
   validationSpy: Validation;
+  authenticationSpy: AuthenticationSpy;
 };
 
 const makeSut = (): SutTypes => {
+  const authenticationSpy = new AuthenticationSpy();
   const validationSpy = new ValidationSpy();
   validationSpy.errorMessage = "Error message";
-  const sut = render(<Login validation={validationSpy} />);
-  return { sut, validationSpy };
+  const sut = render(
+    <Login validation={validationSpy} authentication={authenticationSpy} />
+  );
+  return { sut, validationSpy, authenticationSpy };
 };
 
 describe("Login Page", () => {
@@ -109,6 +129,22 @@ describe("Login Page", () => {
     setTimeout(() => {
       const spinner = sut.getByTestId("spinner") as HTMLSpanElement;
       expect(spinner).toBeTruthy();
-    }, 1000);
+    }, 500);
+  });
+
+  test("Should call authentication with correct values.", async () => {
+    const { sut, validationSpy, authenticationSpy } = makeSut();
+    validationSpy.errorMessage = null;
+    const email = "any_email";
+    const password = "any_password";
+    const emailInput = sut.getByTestId("email") as HTMLInputElement;
+    fireEvent.input(emailInput, { target: { value: email } });
+    const passwordInput = sut.getByTestId("password") as HTMLInputElement;
+    fireEvent.input(passwordInput, { target: { value: password } });
+    const submitButton = sut.getByTestId("submit") as HTMLButtonElement;
+    fireEvent.click(submitButton);
+    setTimeout(() => {
+      expect(authenticationSpy.params).toEqual({ email, password });
+    }, 500);
   });
 });
