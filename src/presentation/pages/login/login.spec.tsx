@@ -96,4 +96,19 @@ describe("Login Page", () => {
     const submitButton = sut.getByTestId("submit") as HTMLButtonElement;
     expect(submitButton.disabled).toBe(false);
   });
+
+  test("Should show spinner on submit.", async () => {
+    const { sut, validationSpy } = makeSut();
+    validationSpy.errorMessage = null;
+    const emailInput = sut.getByTestId("email") as HTMLInputElement;
+    fireEvent.input(emailInput, { target: { value: "any_email" } });
+    const passwordInput = sut.getByTestId("password") as HTMLInputElement;
+    fireEvent.input(passwordInput, { target: { value: "any_password" } });
+    const submitButton = sut.getByTestId("submit") as HTMLButtonElement;
+    fireEvent.click(submitButton);
+    setTimeout(() => {
+      const spinner = sut.getByTestId("spinner") as HTMLSpanElement;
+      expect(spinner).toBeTruthy();
+    }, 1000);
+  });
 });
