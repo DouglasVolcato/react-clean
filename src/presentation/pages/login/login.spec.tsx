@@ -10,6 +10,19 @@ import { Validation } from "../../protocols/validation";
 import { ValidationSpy } from "../../test/mock-validation";
 import { AuthenticationSpy } from "../../test/mock-authentication";
 
+const simulateValidSubmit = (
+  sut: RenderResult,
+  email = "any_email",
+  password = "any_password"
+) => {
+  const emailInput = sut.getByTestId("email") as HTMLInputElement;
+  fireEvent.input(emailInput, { target: { value: email } });
+  const passwordInput = sut.getByTestId("password") as HTMLInputElement;
+  fireEvent.input(passwordInput, { target: { value: password } });
+  const submitButton = sut.getByTestId("submit") as HTMLButtonElement;
+  fireEvent.click(submitButton);
+};
+
 type SutTypes = {
   sut: RenderResult;
   validationSpy: Validation;
@@ -59,16 +72,14 @@ describe("Login Page", () => {
 
   test("Should show email error if validation fails.", () => {
     const { sut } = makeSut();
-    const emailInput = sut.getByTestId("email") as HTMLInputElement;
-    fireEvent.input(emailInput, { target: { value: "any_email" } });
+    simulateValidSubmit(sut);
     const emailStatus = sut.getByTestId("email-status");
     expect(emailStatus.title).toBe("Error message");
   });
 
   test("Should show email error if validation fails.", () => {
     const { sut } = makeSut();
-    const passwordInput = sut.getByTestId("password") as HTMLInputElement;
-    fireEvent.input(passwordInput, { target: { value: "any_password" } });
+    simulateValidSubmit(sut);
     const passwordStatus = sut.getByTestId("password-status");
     expect(passwordStatus.title).toBe("Error message");
   });
@@ -76,8 +87,7 @@ describe("Login Page", () => {
   test("Should show valid state if password validation succeeds.", () => {
     const { sut, validationSpy } = makeSut();
     validationSpy.errorMessage = null;
-    const passwordInput = sut.getByTestId("password") as HTMLInputElement;
-    fireEvent.input(passwordInput, { target: { value: "any_password" } });
+    simulateValidSubmit(sut);
     const passwordStatus = sut.getByTestId("password-status");
     expect(passwordStatus.title).toBe("Everything is fine!");
   });
@@ -85,8 +95,7 @@ describe("Login Page", () => {
   test("Should show valid state if email validation succeeds.", () => {
     const { sut, validationSpy } = makeSut();
     validationSpy.errorMessage = null;
-    const emailInput = sut.getByTestId("email") as HTMLInputElement;
-    fireEvent.input(emailInput, { target: { value: "any_email" } });
+    simulateValidSubmit(sut);
     const emailStatus = sut.getByTestId("email-status");
     expect(emailStatus.title).toBe("Everything is fine!");
   });
@@ -94,10 +103,7 @@ describe("Login Page", () => {
   test("Should enable submit button if form is valid.", () => {
     const { sut, validationSpy } = makeSut();
     validationSpy.errorMessage = null;
-    const emailInput = sut.getByTestId("email") as HTMLInputElement;
-    fireEvent.input(emailInput, { target: { value: "any_email" } });
-    const passwordInput = sut.getByTestId("password") as HTMLInputElement;
-    fireEvent.input(passwordInput, { target: { value: "any_password" } });
+    simulateValidSubmit(sut);
     const submitButton = sut.getByTestId("submit") as HTMLButtonElement;
     expect(submitButton.disabled).toBe(false);
   });
@@ -105,12 +111,7 @@ describe("Login Page", () => {
   test("Should show spinner on submit.", async () => {
     const { sut, validationSpy } = makeSut();
     validationSpy.errorMessage = null;
-    const emailInput = sut.getByTestId("email") as HTMLInputElement;
-    fireEvent.input(emailInput, { target: { value: "any_email" } });
-    const passwordInput = sut.getByTestId("password") as HTMLInputElement;
-    fireEvent.input(passwordInput, { target: { value: "any_password" } });
-    const submitButton = sut.getByTestId("submit") as HTMLButtonElement;
-    fireEvent.click(submitButton);
+    simulateValidSubmit(sut);
     setTimeout(() => {
       const spinner = sut.getByTestId("spinner") as HTMLSpanElement;
       expect(spinner).toBeTruthy();
@@ -122,14 +123,21 @@ describe("Login Page", () => {
     validationSpy.errorMessage = null;
     const email = "any_email";
     const password = "any_password";
-    const emailInput = sut.getByTestId("email") as HTMLInputElement;
-    fireEvent.input(emailInput, { target: { value: email } });
-    const passwordInput = sut.getByTestId("password") as HTMLInputElement;
-    fireEvent.input(passwordInput, { target: { value: password } });
-    const submitButton = sut.getByTestId("submit") as HTMLButtonElement;
-    fireEvent.click(submitButton);
+    simulateValidSubmit(sut);
     setTimeout(() => {
       expect(authenticationSpy.params).toEqual({ email, password });
+    }, 500);
+  });
+
+  test("Should call authentication only once.", async () => {
+    const { sut, validationSpy, authenticationSpy } = makeSut();
+    validationSpy.errorMessage = null;
+    const email = "any_email";
+    const password = "any_password";
+    simulateValidSubmit(sut);
+    simulateValidSubmit(sut);
+    setTimeout(() => {
+      expect(authenticationSpy.callsCount).toBe(1);
     }, 500);
   });
 });
